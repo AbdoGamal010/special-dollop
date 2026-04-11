@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PS Cafe Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f1623">
+  
+
+</head>
+<body>
+
+<!-- ==================== LOGIN ==================== -->
+<div id="login-screen">
+  <div class="lw">
+    <div class="lw-ring">
+<img src="img4.png" alt="logo">
+    </div>
+    <h1>PS PARIS <span>Manager</span></h1>
+    <p>أدخل كلمة السر للمتابعة</p>
+    <div class="lw-box">
+      <input class="pw-in" id="pw-in" type="password" placeholder="كلمة السر"
+        onkeydown="if(event.key==='Enter') doLogin()"/>
+      <button class="btn-login" onclick="doLogin()">دخول ◀</button>
+      <div class="login-err" id="lerr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== APP ==================== -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">
+<img src="img4.png" alt="logo">
+      </div>
+      <div class="tb-brand">
+        <strong>PS PARIS</strong>
+        <small>Manager</small>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-clock" id="tb-clock">00:00:00</div>
+      <button class="nb active" onclick="gotoPage('devices', this)">الأجهزة</button>
+      <button class="nb" onclick="gotoPage('reports', this)">التقارير</button>
+      <button class="nb" onclick="gotoPage('expenses', this)">المصاريف</button>
+      <button class="nb" onclick="gotoPage('settings', this)">الإعدادات</button>
+      <button class="btn-out" onclick="doLogout()">خروج</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- PAGE: DEVICES -->
+    <div id="page-devices" class="page active">
+      <div class="srow">
+        <div class="sbox sb">
+          <div class="slbl">أجهزة شغالة</div>
+          <div class="sval a" id="st-act">0</div>
+          <div class="ssub">من 8 أجهزة</div>
+        </div>
+        <div class="sbox sg">
+          <div class="slbl">إيراد اليوم</div>
+          <div class="sval g" id="st-rev">0.00 جنيه</div>
+          <div class="ssub">جلسات + مشتريات</div>
+        </div>
+        <div class="sbox sa">
+          <div class="slbl">جلسات اليوم</div>
+          <div class="sval" id="st-sess">0</div>
+          <div class="ssub">جلسة مكتملة</div>
+        </div>
+        <div class="sbox sr">
+          <div class="slbl">متوسط الجلسة</div>
+          <div class="sval" id="st-avg">—</div>
+          <div class="ssub">دقيقة</div>
+        </div>
+      </div>
+      <div class="dgrid" id="dgrid"></div>
+    </div>
+
+    <!-- PAGE: REPORTS -->
+    <div id="page-reports" class="page">
+      <div class="rhead">
+        <h2>التقارير</h2>
+        <div style="display:flex;gap:8px">
+          <button class="nb active" onclick="setRpt('today', this)">اليوم</button>
+          <button class="nb" onclick="setRpt('month', this)">الشهر</button>
+        </div>
+      </div>
+      <div class="srow" id="rpt-stats"></div>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>الجهاز</th>
+              <th>بداية</th>
+              <th>نهاية</th>
+              <th>المدة</th>
+              <th>التايمر</th>
+              <th>مشتريات</th>
+              <th>الإجمالي</th>
+            </tr>
+          </thead>
+          <tbody id="rpt-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGE: EXPENSES -->
+    <div id="page-expenses" class="page">
+      <div class="rhead" style="margin-bottom:16px">
+        <h2>المصاريف الإضافية</h2>
+      </div>
+      <div class="exp-grid">
+        <div class="ebox">
+          <h3>➕ إضافة مصروف</h3>
+          <div class="fg">
+            <label>اسم المصروف</label>
+            <input class="fi" id="exp-n" placeholder="مثال: فاتورة كهرباء"/>
+          </div>
+          <div class="fg">
+            <label>المبلغ (جنيه)</label>
+            <input class="fi" id="exp-a" type="number" min="1" placeholder="0"/>
+          </div>
+          <div class="fg">
+            <label>ملاحظة</label>
+            <input class="fi" id="exp-note" placeholder="اختياري..."/>
+          </div>
+          <button class="btn-addexp" onclick="addExp()">إضافة ←</button>
+          <div class="smsg" id="exp-msg"></div>
+        </div>
+        <div class="exp-list-box">
+          <h3>📋 المصاريف المسجلة</h3>
+          <div id="exp-body"></div>
+          <div class="etotal" id="exp-tot" style="display:none">
+            <span>الإجمالي</span>
+            <span id="exp-tot-v">0 جنيه</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: SETTINGS -->
+    <div id="page-settings" class="page">
+      <div class="sbox">
+        <h3>⚙️ الأسعار والإعدادات</h3>
+        <div class="srow">
+          <div><div class="slbl">سعر الساعة</div><div class="sdesc">يطبق على الجلسات الجديدة</div></div>
+          <input class="sinput" id="set-rate" type="number" min="1"/>
+        </div>
+        <div class="srow">
+          <div><div class="slbl">سعر المشروب 🥤</div><div class="sdesc">جنيه للواحدة</div></div>
+          <input class="sinput" id="set-drink" type="number" min="1"/>
+        </div>
+        <div class="srow">
+          <div><div class="slbl">سعر الشيبسي 🍟</div><div class="sdesc">جنيه للواحدة</div></div>
+          <input class="sinput" id="set-chips" type="number" min="1"/>
+        </div>
+        <div class="srow">
+          <div><div class="slbl">سعر الشكولاتة 🍫</div><div class="sdesc">جنيه للواحدة</div></div>
+          <input class="sinput" id="set-choc" type="number" min="1"/>
+        </div>
+      </div>
+      <div class="sbox">
+        <h3>🔒 تغيير كلمة السر</h3>
+        <div class="srow">
+          <div><div class="slbl">الكلمة الحالية</div></div>
+          <input class="sinput" id="set-old" type="password" placeholder="••••"/>
+        </div>
+        <div class="srow">
+          <div><div class="slbl">الكلمة الجديدة</div></div>
+          <input class="sinput" id="set-new" type="password" placeholder="••••"/>
+        </div>
+      </div>
+      <button class="btn-save" onclick="saveSettings()">حفظ التغييرات ✓</button>
+      <div class="smsg" id="set-msg"></div>
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end app -->
+
+<!-- ==================== RECEIPT MODAL ==================== -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-top">
+      <div class="mcheck">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>انتهت الجلسة</h2>
+      <div class="msub" id="m-dev">جهاز 1</div>
+    </div>
+    <div class="modal-body">
+      <div class="rrow"><span class="rl">بداية الجلسة</span><span class="rv" id="m-s">—</span></div>
+      <div class="rrow"><span class="rl">نهاية الجلسة</span><span class="rv" id="m-e">—</span></div>
+      <div class="rrow"><span class="rl">المدة</span><span class="rv" id="m-d">—</span></div>
+      <div class="rrow"><span class="rl">سعر الساعة</span><span class="rv" id="m-r">—</span></div>
+      <div class="rrow"><span class="rl">تكلفة الوقت</span><span class="rv" id="m-tc">—</span></div>
+      <div id="m-cons-section"></div>
+      <div class="rtotal">
+        <span class="rl">الإجمالي الكلي</span>
+        <span class="rv" id="m-total">—</span>
+      </div>
+      <button class="btn-confirm" onclick="closeModal()">تم الاستلام ✓</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</body>
+</html>
